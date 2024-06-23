@@ -1,0 +1,35 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            {{#each products}}
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card" style="width: 17rem;">
+                    <img class="card-img-top" src="/images/product-images/{{this._id}}.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{this.Name}}</h5>
+                        <h6 class="card-title">{{this.Category}}</h6>
+                        <p class="card-text">{{this.Description}}</p>
+                        <button onclick="AddToCart('{{this._id}}')" class="btn btn-primary">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</section>
+
+<script>
+    async function AddToCart(productId) {
+        try {
+            const response = await fetch('/add-to-cart/' + productId, {
+                method: 'GET'
+            })
+            if (response.status === 401)
+                window.location.href = "/login";
+            let cartCountElement = document.getElementById('cartCountBadge')
+            cartCountElement.innerHTML = parseInt(cartCountElement.innerHTML || 0) + 1
+        } catch (error) {
+            console.log(error)
+        }
+    }
+</script>

@@ -1,0 +1,59 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            {{#unless products}}
+            <p class="center">Cart is Empty</p>
+            {{/unless}}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Company</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <td class="col-2"><img class="col" src="/images/product-images/{{this.product._id}}.png" alt="{{this.product.Name}} image"></td>
+                        <td>{{this.product.Name}}</td>
+                        <td>{{this.product.Price}}</td>
+                        <td>
+                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',-1,'{{this.quantity}}')" class="btn btn-secondary">-</button>
+                            {{this.quantity}}
+                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',1,'{{this.quantity}}')" class="btn btn-secondary">+</button>
+                        </td>
+                        <td>
+                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}','delete','{{this.quantity}}')" class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function changeCartQty(cartId, productId, changeQty, currentQty) {
+        try {
+            const result = await fetch('/change-product-qty', {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cartId,
+                    productId,
+                    changeQty,
+                    currentQty
+                }),
+            })
+            console.log(await result.json())
+        } catch (err) {
+            console.log(err)
+        }
+    }
+</script>
