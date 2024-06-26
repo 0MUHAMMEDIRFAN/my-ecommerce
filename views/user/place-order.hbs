@@ -1,0 +1,38 @@
+<div class="m-5">
+    <h1 class="">Enter Delivery Details</h1>
+    <br>
+    <form action="/place-order/{{user._id}}" id="" method="POST" class="row">
+        <div class="col-12 col-lg-6 ">
+            <div class="form-group">
+                <label for="address">Address<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="address" id="address" placeholder="Enter your Address" required='true'>
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" name="pincode" id="pincode" placeholder="Enter Your Pincode" required="true">
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" name="mobile" id="mobile" placeholder="Enter Your Mobile" required="true">
+            </div>
+
+        </div>
+        <div class="border border-lg p-4  col-12 col-lg-6">
+            <h2>Total Amount : ₹ <span>{{total}}</span></h2>
+            <hr>
+            <h6>Payment Method</h6>
+            <div action="">
+                <div>
+                    <input type="radio" name="payment" value="COD" required> COD
+                </div>
+                <div>
+                    <input type="radio" name="payment" value="UPI"> UPI Payment
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Chekout" class="btn btn-info btn-block mt-1">
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>

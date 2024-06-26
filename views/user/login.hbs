@@ -1,6 +1,6 @@
 <div class="custom-container">
     <h1 class="text-center text-primary">Login Form</h1>
-    <div class="jumbotron">
+    <div class="jumbotron bg-secondary">
         <br>
         {{#if status.state}}
         <div class="alert alert-success alert-dismissible fade show">
@@ -20,7 +20,7 @@
         <form action="/login" id="login" method="POST">
             <div class="form-group">
                 <label for="email">Email Id <span class="text-danger">*</span></label>
-                <input type="email" class="form-control" name="username" id="email" placeholder="Enter your email id" required='true'>
+                <input type="email" class="form-control" name="username" id="email" placeholder="Enter your email id" required='true' autofocus>
             </div>
             <div class="form-group">
                 <label for="password">Password <span class="text-danger">*</span></label>

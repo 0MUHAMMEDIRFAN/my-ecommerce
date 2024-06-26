@@ -1,9 +1,7 @@
 <section>
     <div class="container mt-5">
         <div class="row">
-            {{#unless products}}
-            <p class="center">Cart is Empty</p>
-            {{/unless}}
+            {{#if products}}
             <table class="table">
                 <thead>
                     <tr>
@@ -16,30 +14,40 @@
                 </thead>
                 <tbody>
                     {{#each products}}
-                    <tr>
+                    <tr id="{{this.product._id}}-product">
                         <td class="col-2"><img class="col" src="/images/product-images/{{this.product._id}}.png" alt="{{this.product.Name}} image"></td>
                         <td>{{this.product.Name}}</td>
                         <td>{{this.product.Price}}</td>
                         <td>
-                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',-1,'{{this.quantity}}')" class="btn btn-secondary">-</button>
-                            {{this.quantity}}
-                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',1,'{{this.quantity}}')" class="btn btn-secondary">+</button>
+                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',-1,'{{../user._id}}')" class="btn btn-secondary">-</button>
+                            <span id="{{this.product._id}}-quantity">{{this.quantity}}</span>
+                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',1,'{{../user._id}}')" class="btn btn-secondary">+</button>
                         </td>
                         <td>
-                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}','delete','{{this.quantity}}')" class="btn btn-danger">Delete</button>
+                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}','delete','{{../user._id}}')" class="btn btn-danger">Delete</button>
                         </td>
                     </tr>
                     {{/each}}
                 </tbody>
             </table>
         </div>
+        <hr>
+        <div class="float-right pr">
+            <h3 class="float-right">TOTAL : <span id="totalAmount">{{total}}</span></h3>
+            <a href="/place-order" class="btn btn-success mt-1" style="width: 100%;">Place Order</a>
+        </div>
+        {{else}}
+        <p class="center col-12">Cart is Empty</p>
+        {{/if}}
     </div>
 </section>
 
 <script>
-    async function changeCartQty(cartId, productId, changeQty, currentQty) {
+    async function changeCartQty(cartId, productId, changeQty, userId) {
         try {
-            const result = await fetch('/change-product-qty', {
+            const productQtyElement = document.getElementById(productId + "-quantity")
+            let currentQty = parseInt(productQtyElement.innerHTML)
+            let result = await fetch('/change-product-qty', {
                 method: "post",
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,10 +56,20 @@
                     cartId,
                     productId,
                     changeQty,
-                    currentQty
+                    currentQty,
+                    userId
                 }),
             })
-            console.log(await result.json())
+            if (!isNaN(changeQty) && (currentQty > 1 || changeQty > 0)) {
+                productQtyElement.innerHTML = currentQty + changeQty
+            } else {
+                document.getElementById(productId + "-product").remove()
+            }
+            result = await result.json()
+            result.totalAmount ? document.getElementById("totalAmount").innerHTML = result.totalAmount : window.location.reload()
+
+            console.log(result)
+
         } catch (err) {
             console.log(err)
         }

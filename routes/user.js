@@ -53,7 +53,6 @@ router.post('/signup', (req, res) => {
     // console.log(result)
     res.render('user/login', { result })
   }).catch(error => {
-    console.log(error)
     res.render('user/signup', { error })
   })
 })
@@ -63,11 +62,23 @@ router.get("/logout", (req, res) => {
   res.redirect("/")
 })
 
-router.get("/cart", verifyLogin, (req, res) => {
+router.get("/cart", verifyLogin, async (req, res) => {
   const { user } = req.session
+  let total = await userHelpers.getTotalCartAmount(user._id)
   userHelpers.getCartItems(user._id).then((products) => {
-    console.log(products)
-    res.render("user/cart", { products, user: user })
+    res.render("user/cart", { products, user: user, total: total })
+  })
+})
+
+router.get('/order-placed', verifyLogin, (req, res) => {
+  const { user } = req.session
+  res.render('user/order-placed', { user })
+})
+
+router.get('/orders', verifyLogin, (req, res) => {
+  const { user } = req.session
+  userHelpers.getOrders(user._id).then((result) => {
+    res.render("user/orders", { orders: result, user })
   })
 })
 
@@ -90,11 +101,34 @@ router.get('/add-to-cart/:id', (req, res, next) => {
 })
 
 router.post('/change-product-qty', verifyLogin, (req, res, next) => {
-  const { cartId, productId, changeQty, currentQty } = req.body
-  userHelpers.changeCartProductQty(cartId, productId, changeQty, currentQty).then((result) => {
+  const { cartId, productId, changeQty, currentQty, userId } = req.body
+  userHelpers.changeCartProductQty(cartId, productId, changeQty, currentQty).then(async (result) => {
+    let totalAmount = await userHelpers.getTotalCartAmount(userId)
+    result.totalAmount = totalAmount
     res.json(result)
   })
 
+})
+
+router.get('/place-order', verifyLogin, (req, res) => {
+  const { user } = req.session
+  userHelpers.getTotalCartAmount(user._id).then((result) => {
+    res.render('user/place-order', { total: result, user })
+  })
+})
+
+router.post('/place-order/:userId', verifyLogin, async (req, res) => {
+  if (req.body.payment === "COD") {
+    let cartItems = await userHelpers.getCartItems(req.params.userId)
+    let totalAmount = await userHelpers.getTotalCartAmount(req.params.userId)
+    userHelpers.placeOrder(req.body, req.params.userId, cartItems, totalAmount).then((result) => {
+      console.log(result)
+      res.redirect("/order-placed")
+    })
+  }
+  // userHelpers.getTotalCartAmount(req.session.user._id).then((result) => {
+  //   res.render('user/place-order', { total: result[0].total })
+  // })
 })
 
 

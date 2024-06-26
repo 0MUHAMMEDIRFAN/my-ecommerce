@@ -1,4 +1,11 @@
-body {}
+body {
+    background: #000 !important;
+    color: white !important;
+}
+
+* {
+    border-color: white;
+}
 
 a {}
 

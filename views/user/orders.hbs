@@ -1,0 +1,36 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            {{#if orders}}
+            <table class="table">
+                {{!-- <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Order</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                </thead> --}}
+                <tbody>
+                    {{#each orders}}
+                    <tr id="{{this.product._id}}-product">
+                        <td class="col-2"><img class="col" src="/images/product-images/{{this.products.0.product._id}}.png" alt="{{this.products.0.product.Name}} image"></td>
+                        <td>
+                            <div>
+                                <p>{{this.products.0.product.Name}}{{#if this.products.[1]}} and more{{/if}}</p>
+                                <p>{{this.date}}</p>
+
+                            </div>
+                        </td>
+                        <td class="text-bold">{{this.totalAmount}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <hr>
+
+        {{else}}
+        <p class="center col-12">You haven't ordered anything</p>
+        {{/if}}
+    </div>
+</section>
