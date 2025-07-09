@@ -1,34 +1,153 @@
-<section>
-    <div class="container">
-        <a href="/admin/add-product" class="btn btn-primary">Add Product</a>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col"></th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Company</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Description</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each products}}
-                <tr>
-                    <th scope="row">{{@index}}</th>
-                    <td class="col-2"><img class="col" src="/images/product-images/{{this._id}}.png" alt="{{this.Name}} image"></td>
-                    <td>{{this.Name}}</td>
-                    <td>{{this.Price}}</td>
-                    <td>{{this.Category}}</td>
-                    <td>{{this.Description}}</td>
-                    <td>
-                        <a href="/admin/delete-product/{{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure want to delete?')">Delete</a>
-                        <a href="/admin/edit-product?id={{this._id}}" class="btn btn-primary">EDIT</a>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-0">
+                                <i class="fas fa-boxes me-2 text-primary"></i>
+                                Product Management
+                            </h4>
+                            <p class="text-muted mb-0">Manage your product inventory</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="/admin/add-product" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add Product
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {{#if error}}
+                    <div class="alert alert-danger m-3" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{error}}
+                    </div>
+                    {{/if}}
+                    
+                    {{#if products}}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">#</th>
+                                    <th scope="col" class="text-center">Image</th>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each products}}
+                                <tr>
+                                    <td class="ps-4 fw-semibold">{{add @index 1}}</td>
+                                    <td class="text-center">
+                                        <img src="https://picsum.photos/60/60?random={{this._id}}" 
+                                             alt="{{this.Name}} image"
+                                             class="rounded border"
+                                             style="width: 60px; height: 60px; object-fit: cover;"
+                                             loading="lazy">
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">{{this.Name}}</div>
+                                        <small class="text-muted">ID: {{this._id}}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success-subtle text-success fs-6">
+                                            ${{this.Price}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info-subtle text-info">{{this.Category}}</span>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;" title="{{this.Description}}">
+                                            {{this.Description}}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="/admin/edit-product?id={{this._id}}" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               title="Edit Product">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    onclick="confirmDeleteProduct('{{this._id}}', '{{this.Name}}')"
+                                                    title="Delete Product">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{else}}
+                    <div class="text-center py-5">
+                        <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No products found</h5>
+                        <p class="text-muted">Start by adding your first product to the inventory.</p>
+                        <a href="/admin/add-product" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Add Your First Product
+                        </a>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+</div>
+
+<script>
+function confirmDeleteProduct(productId, productName) {
+    if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+        window.location.href = `/admin/delete-product/${productId}`;
+    }
+}
+
+// Add some nice animations
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.1}s`;
+        row.classList.add('animate-fade-in');
+    });
+});
+</script>
+
+<style>
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Manager - E-commerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .card { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .btn-custom { border-radius: 10px; padding: 12px 30px; font-weight: 600; }
+        .status-card { border-left: 5px solid #007bff; }
+        .loading { display: none; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 10px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .data-preview { background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 10px 0; }
+        .count-badge { font-size: 1.2em; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h1 class="mb-0">
+                            <i class="fas fa-database me-3"></i>
+                            Database Manager
+                        </h1>
+                        <p class="mb-0 mt-2">Manage your e-commerce test data</p>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <!-- Status Section -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card status-card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-server fa-2x text-primary mb-2"></i>
+                                        <h6>Database</h6>
+                                        <span class="badge bg-success">Connected</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card status-card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-users fa-2x text-info mb-2"></i>
+                                        <h6>Users</h6>
+                                        <span class="badge bg-info count-badge" id="userCount">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card status-card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-box fa-2x text-warning mb-2"></i>
+                                        <h6>Products</h6>
+                                        <span class="badge bg-warning count-badge" id="productCount">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="d-grid gap-3">
+                                    <button class="btn btn-success btn-custom" onclick="seedDatabase()">
+                                        <i class="fas fa-seedling me-2"></i>
+                                        <span class="btn-text">Seed Fresh Data</span>
+                                        <span class="loading"><i class="fas fa-spinner fa-spin me-2"></i>Seeding...</span>
+                                    </button>
+                                    
+                                    <button class="btn btn-info btn-custom" onclick="checkData()">
+                                        <i class="fas fa-search me-2"></i>
+                                        Check Current Data
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-grid gap-3">
+                                    <button class="btn btn-warning btn-custom" onclick="clearDatabase()">
+                                        <i class="fas fa-trash me-2"></i>
+                                        <span class="btn-text">Clear Database</span>
+                                        <span class="loading"><i class="fas fa-spinner fa-spin me-2"></i>Clearing...</span>
+                                    </button>
+                                    
+                                    <button class="btn btn-primary btn-custom" onclick="addSampleProducts()">
+                                        <i class="fas fa-plus me-2"></i>
+                                        Add Sample Products
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Section -->
+                        <div id="results"></div>
+
+                        <!-- Data Preview -->
+                        <div class="data-preview">
+                            <h5><i class="fas fa-eye me-2"></i>What will be added:</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-primary">👥 Users (4)</h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Admin:</strong> admin@ecommerce.com</li>
+                                        <li><strong>John Smith:</strong> john@example.com</li>
+                                        <li><strong>Sarah Johnson:</strong> sarah@example.com</li>
+                                        <li><strong>Mike Wilson:</strong> mike@example.com</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-primary">📦 Products (20)</h6>
+                                    <ul class="list-unstyled">
+                                        <li>📱 Electronics (9 items)</li>
+                                        <li>⚽ Sports (3 items)</li>
+                                        <li>🏠 Home & Kitchen (3 items)</li>
+                                        <li>🎮 Gaming (3 items)</li>
+                                        <li>👕 Fashion (3 items)</li>
+                                        <li>🔧 Accessories (2 items)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="text-center mt-4">
+                            <a href="/" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-home me-1"></i>Go to Store
+                            </a>
+                            <a href="/admin" class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-cog me-1"></i>Admin Panel
+                            </a>
+                            <a href="/products" class="btn btn-outline-info">
+                                <i class="fas fa-box me-1"></i>View Products
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check data on load
+        window.onload = () => checkData();
+
+        async function seedDatabase() {
+            const btn = document.querySelector('button[onclick="seedDatabase()"]');
+            const btnText = btn.querySelector('.btn-text');
+            const loading = btn.querySelector('.loading');
+            
+            try {
+                btnText.style.display = 'none';
+                loading.style.display = 'inline';
+                btn.disabled = true;
+
+                const response = await fetch('/seed-database', { method: 'POST' });
+                const result = await response.json();
+
+                if (result.success) {
+                    showResult('success', `✅ Database seeded successfully!<br>
+                        📊 Added: ${result.data.users} users, ${result.data.products} products`);
+                    setTimeout(() => checkData(), 1000);
+                } else {
+                    showResult('error', `❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ Network error: ${error.message}`);
+            } finally {
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        async function clearDatabase() {
+            if (!confirm('⚠️ Are you sure you want to clear all data? This action cannot be undone!')) {
+                return;
+            }
+
+            const btn = document.querySelector('button[onclick="clearDatabase()"]');
+            const btnText = btn.querySelector('.btn-text');
+            const loading = btn.querySelector('.loading');
+            
+            try {
+                btnText.style.display = 'none';
+                loading.style.display = 'inline';
+                btn.disabled = true;
+
+                const response = await fetch('/clear-database', { method: 'POST' });
+                const result = await response.json();
+
+                if (result.success) {
+                    showResult('success', '🗑️ Database cleared successfully!');
+                    setTimeout(() => checkData(), 1000);
+                } else {
+                    showResult('error', `❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ Network error: ${error.message}`);
+            } finally {
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        async function addSampleProducts() {
+            try {
+                const response = await fetch('/add-sample-products', { method: 'POST' });
+                const result = await response.json();
+
+                if (result.success) {
+                    showResult('success', `✅ Added ${result.count} sample products!`);
+                    setTimeout(() => checkData(), 1000);
+                } else {
+                    showResult('error', `❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ Network error: ${error.message}`);
+            }
+        }
+
+        async function checkData() {
+            try {
+                const response = await fetch('/debug-db');
+                const data = await response.json();
+                
+                document.getElementById('userCount').textContent = data.userCount || 0;
+                document.getElementById('productCount').textContent = data.productCount || 0;
+                
+                showResult('info', `📊 Current data: ${data.userCount || 0} users, ${data.productCount || 0} products`);
+            } catch (error) {
+                showResult('error', `❌ Error checking data: ${error.message}`);
+            }
+        }
+
+        function showResult(type, message) {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div class="result ${type}">${message}</div>`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                results.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

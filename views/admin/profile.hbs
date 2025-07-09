@@ -1,0 +1,84 @@
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-0">
+                                <i class="fas fa-user-shield me-2 text-primary"></i>
+                                Admin Profile
+                            </h4>
+                            <p class="text-muted mb-0">Manage your admin account settings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="mb-4">
+                                <img src="https://ui-avatars.com/api/?name={{user.fullname}}&background=dc3545&color=fff&size=120&rounded=true" 
+                                     alt="{{user.fullname}}" class="rounded-circle mb-3" width="120" height="120">
+                                <h5 class="mb-1">{{user.fullname}}</h5>
+                                <p class="text-muted">{{user.email}}</p>
+                                <span class="badge bg-danger">Administrator</span>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" value="{{user.fullname}}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="{{user.email}}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Role</label>
+                                        <input type="text" class="form-control" value="{{user.role}}" disabled>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Member Since</label>
+                                        <input type="text" class="form-control" value="{{user.createdAt}}" disabled>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h6 class="fw-bold mb-3">Change Password</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary me-2">
+                                            <i class="fas fa-save me-2"></i>Update Profile
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary">
+                                            <i class="fas fa-undo me-2"></i>Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

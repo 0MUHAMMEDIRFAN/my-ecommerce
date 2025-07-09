@@ -11,13 +11,18 @@ function connect(done) {
     const dbUrl = process.env.DATABASE_URI
     const dbname = process.env.DATABASE_NAME
 
-    MongoClient.connect(dbUrl).then((data, err) => {
-        if (err)
-            return done(err)
-        state.db = data.db(dbname)
-    })
+    if (!dbUrl) {
+        return done(new Error('DATABASE_URI is not defined in environment variables'))
+    }
 
-    done()
+    MongoClient.connect(dbUrl).then((data) => {
+        state.db = data.db(dbname)
+        console.log('Database connected successfully')
+        done()
+    }).catch((err) => {
+        console.error('Database connection error:', err)
+        done(err)
+    })
 }
 
 function get() {

@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fileUpload = require("express-fileupload")
 var db = require("./config/connection")
+const userHelpers = require('./helpers/user-helpers')
 var session = require('express-session')
 
 var userRouter = require('./routes/user');
@@ -17,7 +18,41 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-app.engine('hbs', hbs.create({ extname: 'hbs', defaultLayout: "layout", layoutsDir: __dirname + '/views/layout/', partialsDir: __dirname + '/views/partials/' }).engine)
+app.engine('hbs', hbs.create({ 
+  extname: 'hbs', 
+  defaultLayout: "layout", 
+  layoutsDir: __dirname + '/views/layout/', 
+  partialsDir: __dirname + '/views/partials/',
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  },
+  helpers: {
+    eq: function(a, b) {
+      return a === b;
+    },
+    gt: function(a, b) {
+      return a > b;
+    },
+    sub: function(a, b) {
+      return a - b;
+    },
+    add: function(a, b) {
+      return a + b;
+    },
+    formatDate: function(date) {
+      if (!date) return 'N/A';
+      const options = { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return new Date(date).toLocaleDateString('en-US', options);
+    }
+  }
+}).engine)
 
 dotenv.config()
 
@@ -28,15 +63,27 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload())
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'fallback-secret-key',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }))
 db.connect((err) => {
   if (err) {
     console.log("database Connection Error" + err)
-  } else
+  } else {
     console.log('Database Connected Success')
+    // Create default admin if none exists
+    userHelpers.createDefaultAdmin().then(() => {
+      console.log('Admin initialization completed')
+    }).catch((error) => {
+      console.error('Admin initialization error:', error)
+    })
+  }
 })
 
 

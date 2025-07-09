@@ -1,54 +1,205 @@
-<section>
-    <div class="container mt-5">
+<section class="py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/products" class="text-decoration-none">Products</a></li>
+                        <li class="breadcrumb-item active">Cart</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        {{#if products}}
         <div class="row">
-            {{#if products}}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Company</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each products}}
-                    <tr id="{{this.product._id}}-product">
-                        <td class="col-2"><img class="col" src="/images/product-images/{{this.product._id}}.png" alt="{{this.product.Name}} image"></td>
-                        <td>{{this.product.Name}}</td>
-                        <td>{{this.product.Price}}</td>
-                        <td>
-                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',-1,'{{../user._id}}')" class="btn btn-secondary">-</button>
-                            <span id="{{this.product._id}}-quantity">{{this.quantity}}</span>
-                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',1,'{{../user._id}}')" class="btn btn-secondary">+</button>
-                        </td>
-                        <td>
-                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}','delete','{{../user._id}}')" class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Cart Items ({{products.length}})</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {{#each products}}
+                        <div class="cart-item p-4 border-bottom" id="{{this.product._id}}-product">
+                            <div class="row align-items-center g-3">
+                                <div class="col-md-2 col-4">
+                                    <div class="product-image-wrapper">
+                                        <img src="https://picsum.photos/200/200?random={{this.product._id}}" 
+                                             class="img-fluid rounded product-image" 
+                                             alt="{{this.product.Name}}" 
+                                             loading="lazy">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-8">
+                                    <div class="product-info">
+                                        <h6 class="product-name fw-bold mb-1">{{this.product.Name}}</h6>
+                                        <p class="product-category text-muted small mb-1">{{this.product.Category}}</p>
+                                        <p class="product-price text-primary fw-bold mb-0">₹{{this.product.Price}}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="quantity-section">
+                                        <label class="form-label small text-muted d-block mb-2">Quantity</label>
+                                        <div class="quantity-controls d-flex align-items-center justify-content-center">
+                                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',-1,'{{../user._id}}')" 
+                                                    class="btn btn-outline-secondary btn-sm quantity-btn">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <span class="quantity-display mx-3 fw-bold" id="{{this.product._id}}-quantity">{{this.quantity}}</span>
+                                            <button onclick="changeCartQty('{{this._id}}','{{this.product._id}}',1,'{{../user._id}}')" 
+                                                    class="btn btn-outline-secondary btn-sm quantity-btn">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="item-actions text-center">
+                                        <p class="item-total-label small text-muted mb-1">Total</p>
+                                        <p class="item-total fw-bold mb-3 text-success">₹{{this.total}}</p>
+                                        <button onclick="showDeleteConfirmation('{{this._id}}','{{this.product._id}}','{{../user._id}}')" 
+                                                class="btn btn-outline-danger btn-sm remove-btn">
+                                            <i class="fas fa-trash me-1"></i>Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <!-- Continue Shopping -->
+                <div class="mt-4">
+                    <a href="/products" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 2rem;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">₹{{total}}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <span id="tax">₹0.00</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <strong>Total:</strong>
+                            <strong class="text-primary" id="totalAmount">₹{{total}}</strong>
+                        </div>
+
+                        <!-- Promo Code -->
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Promo code" id="promoCode">
+                                <button class="btn btn-primary" type="button" onclick="applyPromoCode()">
+                                    <i class="fas fa-tag me-1"></i>Apply
+                                </button>
+                            </div>
+                        </div>
+
+                        <a href="/place-order" class="btn btn-primary btn-lg w-100 checkout-btn">
+                            <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                        </a>
+
+                        <!-- Security Badge -->
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-lock me-1"></i>Secure checkout guaranteed
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <hr>
-        <div class="float-right pr">
-            <h3 class="float-right">TOTAL : <span id="totalAmount">{{total}}</span></h3>
-            <a href="/place-order" class="btn btn-success mt-1" style="width: 100%;">Place Order</a>
-        </div>
+
         {{else}}
-        <p class="center col-12">Cart is Empty</p>
+        <!-- Empty Cart -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="empty-cart-illustration mb-4">
+                        <i class="fas fa-shopping-cart fa-5x text-muted"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Your cart is empty</h3>
+                    <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+                    <a href="/products" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
         {{/if}}
     </div>
 </section>
 
+<!-- Remove Item Confirmation Modal -->
+<div class="modal fade" id="removeItemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this item from your cart?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmRemove">Remove Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    let pendingRemoval = null;
+
+    // Show delete confirmation modal
+    function showDeleteConfirmation(cartId, productId, userId) {
+        pendingRemoval = { cartId, productId, userId };
+        const modal = new bootstrap.Modal(document.getElementById('removeItemModal'));
+        modal.show();
+    }
+
     async function changeCartQty(cartId, productId, changeQty, userId) {
+        const productQtyElement = document.getElementById(productId + "-quantity");
+        const currentQty = parseInt(productQtyElement.textContent);
+        
+        // Prevent quantity from going below 1
+        if (currentQty === 1 && changeQty === -1) {
+            showToast('Minimum quantity is 1. Use remove button to delete item.', 'warning');
+            return;
+        }
+
+        // Show loading state
+        const quantityControls = productQtyElement.parentElement;
+        const originalOpacity = quantityControls.style.opacity;
+        quantityControls.style.opacity = '0.6';
+        
         try {
-            const productQtyElement = document.getElementById(productId + "-quantity")
-            let currentQty = parseInt(productQtyElement.innerHTML)
-            let result = await fetch('/change-product-qty', {
-                method: "post",
+            const response = await fetch('/change-product-qty', {
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -59,19 +210,548 @@
                     currentQty,
                     userId
                 }),
-            })
-            if (!isNaN(changeQty) && (currentQty > 1 || changeQty > 0)) {
-                productQtyElement.innerHTML = currentQty + changeQty
-            } else {
-                document.getElementById(productId + "-product").remove()
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            result = await result.json()
-            result.totalAmount ? document.getElementById("totalAmount").innerHTML = result.totalAmount : window.location.reload()
 
-            console.log(result)
+            const data = await response.json();
 
-        } catch (err) {
-            console.log(err)
+            if (data.success) {
+                // Update quantity display
+                const newQty = currentQty + changeQty;
+                productQtyElement.textContent = newQty;
+                
+                // Update item total
+                const itemTotalElement = document.querySelector(`#${productId}-product .item-total`);
+                if (itemTotalElement && data.itemTotal) {
+                    itemTotalElement.textContent = `₹${data.itemTotal}`;
+                }
+                
+                // Update totals
+                updateTotals(data.totalAmount || data.total);
+                
+                if (typeof showToast === 'function') {
+                    showToast('Cart updated successfully!', 'success');
+                }
+            } else {
+                throw new Error(data.message || 'Failed to update cart');
+            }
+
+        } catch (error) {
+            console.error('Error updating cart:', error);
+            if (typeof showToast === 'function') {
+                showToast('Error updating cart. Please try again.', 'danger');
+            }
+        } finally {
+            quantityControls.style.opacity = originalOpacity || '1';
         }
     }
+
+    async function confirmRemoval() {
+        if (!pendingRemoval) {
+            if (typeof showToast === 'function') {
+                showToast('No item selected for removal.', 'warning');
+            }
+            return;
+        }
+
+        const { cartId, productId, userId } = pendingRemoval;
+        const productElement = document.getElementById(productId + "-product");
+        
+        if (!productElement) {
+            if (typeof showToast === 'function') {
+                showToast('Item not found.', 'warning');
+            }
+            return;
+        }
+        
+        // Show loading state
+        productElement.style.transition = 'opacity 0.3s ease';
+        productElement.style.opacity = '0.5';
+        
+        // Disable the remove button to prevent double clicks
+        const removeBtn = productElement.querySelector('.remove-btn');
+        if (removeBtn) {
+            removeBtn.disabled = true;
+            removeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Removing...';
+        }
+        
+        try {
+            const response = await fetch('/change-product-qty', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cartId,
+                    productId,
+                    changeQty: 'delete',
+                    currentQty: 0,
+                    userId
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Remove element from DOM with animation
+            productElement.style.opacity = '0';
+            productElement.style.transform = 'translateX(-100%)';
+            
+            setTimeout(() => {
+                productElement.remove();
+                updateTotals(data.totalAmount);
+                
+                // Check if cart is empty
+                const remainingItems = document.querySelectorAll('.cart-item');
+                if (remainingItems.length === 0) {
+                    if (typeof showToast === 'function') {
+                        showToast('Cart is now empty. Redirecting...', 'info');
+                    }
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    if (typeof showToast === 'function') {
+                        showToast('Item removed from cart successfully!', 'success');
+                    }
+                }
+                
+                // Update cart count in header
+                updateCartCount(-1);
+            }, 300);
+            
+        } catch (error) {
+            console.error('Error removing item:', error);
+            productElement.style.opacity = '1';
+            productElement.style.transform = 'translateX(0)';
+            
+            // Re-enable the remove button
+            if (removeBtn) {
+                removeBtn.disabled = false;
+                removeBtn.innerHTML = '<i class="fas fa-trash me-1"></i>Remove';
+            }
+            
+            if (typeof showToast === 'function') {
+                showToast('Error removing item. Please try again.', 'danger');
+            }
+        } finally {
+            // Clear pending removal and hide modal
+            pendingRemoval = null;
+            const modal = bootstrap.Modal.getInstance(document.getElementById('removeItemModal'));
+            if (modal) {
+                modal.hide();
+            }
+        }
+    }
+
+    function updateTotals(newTotal) {
+        const subtotalElement = document.getElementById('subtotal');
+        const totalElement = document.getElementById('totalAmount');
+        
+        if (subtotalElement) subtotalElement.textContent = `₹${newTotal}`;
+        if (totalElement) totalElement.textContent = `₹${newTotal}`;
+        
+        // Update cart count in header
+        const cartCountElement = document.getElementById('cartCountBadge');
+        if (cartCountElement) {
+            const cartItems = document.querySelectorAll('.cart-item');
+            const totalItems = Array.from(cartItems).reduce((sum, item) => {
+                const qtyElement = item.querySelector('.quantity-display');
+                if (qtyElement) {
+                    const qty = parseInt(qtyElement.textContent) || 0;
+                    return sum + qty;
+                }
+                return sum;
+            }, 0);
+            
+            if (totalItems > 0) {
+                cartCountElement.textContent = totalItems;
+                cartCountElement.classList.remove('d-none');
+            } else {
+                cartCountElement.classList.add('d-none');
+            }
+        }
+    }
+
+    function updateCartCount(increment) {
+        const cartCountElement = document.getElementById('cartCountBadge');
+        if (cartCountElement) {
+            let currentCount = parseInt(cartCountElement.textContent) || 0;
+            currentCount += increment;
+            
+            if (currentCount > 0) {
+                cartCountElement.textContent = currentCount;
+                cartCountElement.classList.remove('d-none');
+            } else {
+                cartCountElement.classList.add('d-none');
+            }
+        }
+    }
+
+    function applyPromoCode() {
+        const promoCode = document.getElementById('promoCode').value.trim();
+        if (!promoCode) {
+            showToast('Please enter a promo code', 'warning');
+            return;
+        }
+
+        // Placeholder for promo code functionality
+        showToast('Promo code functionality coming soon!', 'info');
+    }
+
+    // Set up event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add fallback toast function if not available
+        if (typeof showToast === 'undefined') {
+            window.showToast = function(message, type = 'info') {
+                alert(message);
+            };
+        }
+        
+        // Confirm remove button
+        const confirmRemoveBtn = document.getElementById('confirmRemove');
+        if (confirmRemoveBtn) {
+            confirmRemoveBtn.addEventListener('click', confirmRemoval);
+        }
+
+        // Add hover effects to quantity buttons
+        document.querySelectorAll('.quantity-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Handle modal close events
+        const removeItemModal = document.getElementById('removeItemModal');
+        if (removeItemModal) {
+            removeItemModal.addEventListener('hidden.bs.modal', function() {
+                pendingRemoval = null;
+            });
+        }
+
+        // Add keyboard support for modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && pendingRemoval) {
+                pendingRemoval = null;
+            }
+        });
+
+        // Initialize cart count
+        updateCartCount(0);
+    });
 </script>
+
+<style>
+    .cart-item {
+        transition: all 0.3s ease;
+        position: relative;
+        background: white;
+    }
+
+    .cart-item:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .cart-item.removing {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .product-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #f8f9fa;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-image:hover {
+        transform: scale(1.05);
+    }
+
+    .product-info {
+        padding: 0 1rem;
+    }
+
+    .product-name {
+        color: #333;
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+
+    .product-category {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .product-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .quantity-section {
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    .quantity-controls {
+        background: #f8f9fa;
+        border-radius: 25px;
+        padding: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .quantity-controls button {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        border-radius: 50%;
+        border: 1px solid #dee2e6;
+        background: white;
+    }
+
+    .quantity-controls button:hover {
+        transform: scale(1.1);
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+    .quantity-controls button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .quantity-display {
+        min-width: 50px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #333;
+        background: white;
+        border-radius: 8px;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid #dee2e6;
+    }
+
+    .item-actions {
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    .item-total {
+        font-size: 1.3rem;
+        color: #28a745;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .item-total-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .remove-btn {
+        transition: all 0.2s ease;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border: 1px solid #dc3545;
+        background: white;
+        color: #dc3545;
+    }
+
+    .remove-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    .remove-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .checkout-btn {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .checkout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    }
+
+    .empty-cart-illustration i {
+        opacity: 0.3;
+        margin-bottom: 2rem;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e9ecef;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e9ecef;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 0 0 15px 15px;
+    }
+
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .cart-item {
+            padding: 1.5rem 1rem;
+        }
+        
+        .cart-item .row > div {
+            margin-bottom: 1rem;
+        }
+        
+        .product-info {
+            padding: 0;
+            text-align: center;
+        }
+        
+        .quantity-section {
+            padding: 0.5rem 0;
+        }
+        
+        .quantity-controls {
+            justify-content: center;
+        }
+        
+        .quantity-controls button {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .item-actions {
+            padding: 0.5rem 0;
+        }
+        
+        .remove-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .product-image {
+            height: 80px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .quantity-controls {
+            flex-direction: row;
+            gap: 0.25rem;
+        }
+        
+        .quantity-display {
+            font-size: 1rem;
+            min-width: 40px;
+        }
+        
+        .product-name {
+            font-size: 1rem;
+        }
+        
+        .item-total {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    .loading {
+        animation: pulse 1.5s infinite;
+    }
+
+    /* Card enhancements */
+    .card {
+        border: none;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+    }
+
+    .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    /* Order summary styling */
+    .sticky-top {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .order-summary-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+</style>

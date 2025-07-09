@@ -1,32 +1,229 @@
-<section>
-
-    <div class="container mt-5">
-        <h2>Add Product</h2>
-        <form action="/admin/add-product" enctype="multipart/form-data" id="addProduct" method="POST">
-            <div class="form-group">
-                <label for="Name">Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="Name" id="Name" placeholder="Product Name" />
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-0">
+                                <i class="fas fa-plus-circle me-2 text-primary"></i>
+                                Add New Product
+                            </h4>
+                            <p class="text-muted mb-0">Fill in the details to add a new product</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="/admin" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Products
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    {{#if error}}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{error}}
+                    </div>
+                    {{/if}}
+                    
+                    <form action="/admin/add-product" enctype="multipart/form-data" id="addProductForm" method="POST" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Name" class="form-label">
+                                    <i class="fas fa-tag me-2"></i>Product Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control form-control-lg" name="Name" id="Name" 
+                                       placeholder="Enter product name" required>
+                                <div class="invalid-feedback">
+                                    Please provide a valid product name.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Category" class="form-label">
+                                    <i class="fas fa-list me-2"></i>Category <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control form-control-lg" name="Category" id="Category" 
+                                       placeholder="Enter product category" required>
+                                <div class="invalid-feedback">
+                                    Please provide a valid category.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Price" class="form-label">
+                                    <i class="fas fa-dollar-sign me-2"></i>Price <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" class="form-control form-control-lg" name="Price" id="Price" 
+                                           placeholder="0.00" required min="0">
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please provide a valid price.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Image" class="form-label">
+                                    <i class="fas fa-image me-2"></i>Product Image <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" class="form-control form-control-lg" name="Image" id="Image" 
+                                       accept="image/*" required>
+                                <div class="invalid-feedback">
+                                    Please select a product image.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="Description" class="form-label">
+                                <i class="fas fa-align-left me-2"></i>Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control form-control-lg" name="Description" id="Description" 
+                                      rows="4" placeholder="Enter product description" required></textarea>
+                            <div class="invalid-feedback">
+                                Please provide a product description.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div id="imagePreview" class="d-none">
+                                <label class="form-label">Image Preview:</label>
+                                <div class="border rounded p-2 bg-light">
+                                    <img id="previewImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                                    <span class="btn-text">
+                                        <i class="fas fa-plus me-2"></i>Add Product
+                                    </span>
+                                    <span class="btn-loading d-none">
+                                        <span class="spinner"></span>Adding...
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="reset" class="btn btn-outline-secondary btn-lg w-100">
+                                    <i class="fas fa-undo me-2"></i>Reset Form
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="Category">Category <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="Category" id="Category" placeholder="Product Category" />
-            </div>
-            <div class="form-group">
-                <label for="Price">Price <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" name="Price" id="Price" placeholder="Product Price" />
-            </div>
-            <div class="form-group">
-                <label for="Description">Description <span class="text-danger">*</span></label>
-                <textarea type="number" class="form-control" name="Description" id="Description"
-                    placeholder="Description"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="Image">Image <span class="text-danger">*</span></label>
-                <input type="file" class="form-control" name="Image" id="Image" placeholder="Product Image" />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-info btn-block" />
-            </div>
-        </form>
+        </div>
     </div>
-</section>
+</div>
+
+<script>
+    // Form validation
+    document.getElementById('addProductForm').addEventListener('submit', function(e) {
+        const form = this;
+        let isValid = true;
+        
+        // Reset validation
+        form.classList.remove('was-validated');
+        
+        // Validate required fields
+        const requiredFields = ['Name', 'Category', 'Price', 'Description', 'Image'];
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+        });
+        
+        // Validate price
+        const price = document.getElementById('Price');
+        if (price.value && parseFloat(price.value) < 0) {
+            price.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoading = submitBtn.querySelector('.btn-loading');
+        
+        btnText.classList.add('d-none');
+        btnLoading.classList.remove('d-none');
+        submitBtn.disabled = true;
+    });
+    
+    // Image preview
+    document.getElementById('Image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            document.getElementById('imagePreview').classList.add('d-none');
+        }
+    });
+    
+    // Form reset
+    document.querySelector('button[type="reset"]').addEventListener('click', function() {
+        document.getElementById('imagePreview').classList.add('d-none');
+        document.querySelectorAll('.form-control').forEach(field => {
+            field.classList.remove('is-valid', 'is-invalid');
+        });
+    });
+    
+    // Real-time validation
+    document.querySelectorAll('.form-control').forEach(field => {
+        field.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+    });
+</script>
+
+<style>
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+    
+    .form-control.is-valid {
+        border-color: var(--success-color);
+    }
+    
+    .form-control.is-invalid {
+        border-color: var(--danger-color);
+    }
+    
+    .btn-loading .spinner {
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid currentColor;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>

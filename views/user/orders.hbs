@@ -1,36 +1,247 @@
-<section>
-    <div class="container mt-5">
-        <div class="row">
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="fw-bold mb-2">
+                        <i class="fas fa-shopping-bag me-2 text-primary"></i>My Orders
+                    </h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                            <li class="breadcrumb-item active">Orders</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="window.location.reload()">
+                        <i class="fas fa-sync me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
+            
             {{#if orders}}
-            <table class="table">
-                {{!-- <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Order</th>
-                        <th scope="col">Amount</th>
-                    </tr>
-                </thead> --}}
-                <tbody>
-                    {{#each orders}}
-                    <tr id="{{this.product._id}}-product">
-                        <td class="col-2"><img class="col" src="/images/product-images/{{this.products.0.product._id}}.png" alt="{{this.products.0.product.Name}} image"></td>
-                        <td>
-                            <div>
-                                <p>{{this.products.0.product.Name}}{{#if this.products.[1]}} and more{{/if}}</p>
-                                <p>{{this.date}}</p>
-
+            <div class="row">
+                {{#each orders}}
+                <div class="col-12 mb-4">
+                    <div class="card border-0 shadow-sm order-card">
+                        <div class="card-header bg-white py-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-receipt text-primary me-2"></i>
+                                        <div>
+                                            <small class="text-muted">Order ID</small>
+                                            <div class="fw-bold">#{{this._id}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar text-info me-2"></i>
+                                        <div>
+                                            <small class="text-muted">Order Date</small>
+                                            <div class="fw-bold">{{formatDate this.date}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-dollar-sign text-success me-2"></i>
+                                        <div>
+                                            <small class="text-muted">Total Amount</small>
+                                            <div class="fw-bold text-success">₹{{this.totalAmount}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-truck text-warning me-2"></i>
+                                        <div>
+                                            <small class="text-muted">Status</small>
+                                            <div>
+                                                <span class="badge bg-{{#if this.status}}{{#eq this.status 'delivered'}}success{{else}}{{#eq this.status 'shipped'}}info{{else}}warning{{/eq}}{{/eq}}{{else}}warning{{/if}}">
+                                                    {{#if this.status}}{{this.status}}{{else}}Processing{{/if}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </td>
-                        <td class="text-bold">{{this.totalAmount}}</td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="fas fa-box me-2"></i>Order Items
+                                    </h6>
+                                    <div class="order-items">
+                                        {{#each this.products}}
+                                        <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                                            <div class="flex-shrink-0 me-3">
+                                                <img src="https://picsum.photos/80/80?random={{this.product._id}}" 
+                                                     class="rounded" alt="{{this.product.Name}}" 
+                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">{{this.product.Name}}</h6>
+                                                <p class="text-muted mb-1 small">{{this.product.Category}}</p>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-3">Qty: <strong>{{this.quantity}}</strong></span>
+                                                    <span class="text-primary fw-bold">₹{{this.product.Price}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{/each}}
+                                        
+                                        {{#if this.products.[1]}}
+                                        <div class="text-center">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="toggleOrderItems('{{this._id}}')">
+                                                <i class="fas fa-chevron-down me-1"></i>
+                                                View {{this.products.length}} items
+                                            </button>
+                                        </div>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded p-3 h-100">
+                                        <h6 class="fw-bold mb-3">
+                                            <i class="fas fa-map-marker-alt me-2"></i>Delivery Address
+                                        </h6>
+                                        <div class="mb-3">
+                                            <p class="mb-1">{{this.deliveryDetails.address}}</p>
+                                            <p class="mb-1">Pincode: {{this.deliveryDetails.pincode}}</p>
+                                            <p class="mb-0">Phone: {{this.deliveryDetails.mobile}}</p>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2">
+                                            <a href="/view-order/{{this._id}}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>View Details
+                                            </a>
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="trackOrder('{{this._id}}')">
+                                                <i class="fas fa-map-marked-alt me-1"></i>Track Order
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{else}}
+            <!-- Empty Orders -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <div class="empty-orders-illustration mb-4">
+                            <div class="orders-icon-wrapper">
+                                <i class="fas fa-shopping-bag fa-4x text-primary mb-3"></i>
+                                <div class="empty-orders-animation">
+                                    <i class="fas fa-search fa-2x text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold mb-3">No orders yet</h3>
+                        <p class="text-muted mb-4">
+                            You haven't placed any orders yet. Start shopping to see your orders here.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="/products" class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+                            </a>
+                            <a href="/categories" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-th-large me-2"></i>Browse Categories
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4 p-4 bg-light rounded">
+                            <h6 class="fw-bold mb-2">Why shop with us?</h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-truck text-success me-2"></i>
+                                        <small>Free Delivery</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-shield-alt text-primary me-2"></i>
+                                        <small>Secure Payment</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-undo text-warning me-2"></i>
+                                        <small>Easy Returns</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
         </div>
-        <hr>
-
-        {{else}}
-        <p class="center col-12">You haven't ordered anything</p>
-        {{/if}}
     </div>
-</section>
+</div>
+
+<script>
+function toggleOrderItems(orderId) {
+    // Toggle visibility of order items
+    const button = event.target;
+    const icon = button.querySelector('i');
+    
+    if (icon.classList.contains('fa-chevron-down')) {
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+        button.innerHTML = '<i class="fas fa-chevron-up me-1"></i>Hide items';
+    } else {
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+        button.innerHTML = '<i class="fas fa-chevron-down me-1"></i>View items';
+    }
+}
+
+function trackOrder(orderId) {
+    // Implement order tracking
+    alert('Order tracking feature coming soon for order: ' + orderId);
+}
+</script>
+
+<style>
+    .order-card {
+        transition: all 0.3s ease;
+    }
+    
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+    }
+    
+    .orders-icon-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .empty-orders-animation {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: searchPulse 2s infinite;
+    }
+    
+    @keyframes searchPulse {
+        0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
+        50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    .badge {
+        font-size: 0.8em;
+        padding: 0.4em 0.8em;
+    }
+</style>

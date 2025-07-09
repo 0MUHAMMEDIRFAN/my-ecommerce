@@ -1,0 +1,201 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-0">
+                                <i class="fas fa-users me-2 text-primary"></i>
+                                User Management
+                            </h4>
+                            <p class="text-muted mb-0">Manage registered users and their permissions</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex gap-2">
+                                <div class="d-flex align-items-center me-3">
+                                    <span class="badge bg-primary me-2">{{totalUsers}}</span>
+                                    <small class="text-muted">Total Users</small>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm" onclick="refreshUsers()">
+                                    <i class="fas fa-sync me-1"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {{#if error}}
+                <div class="alert alert-danger m-3" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {{error}}
+                </div>
+                {{/if}}
+                
+                <div class="card-body p-0">
+                    {{#if users.length}}
+                    <!-- Users Statistics -->
+                    <div class="row g-3 p-3 bg-light">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-users text-primary fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="fs-5 fw-bold">{{totalUsers}}</div>
+                                    <div class="text-muted">Total Users</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-user-shield text-danger fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="fs-5 fw-bold">{{adminUsers}}</div>
+                                    <div class="text-muted">Admin Users</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-user text-success fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="fs-5 fw-bold">{{regularUsers}}</div>
+                                    <div class="text-muted">Regular Users</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Join Date</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each users}}
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="https://ui-avatars.com/api/?name={{fullname}}&background=random&color=white&size=40" 
+                                                     class="rounded-circle" alt="User Avatar" width="40" height="40">
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <div class="fw-semibold">{{fullname}}</div>
+                                                <small class="text-muted">ID: {{_id}}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">{{email}}</div>
+                                        <small class="text-muted">{{email}}</small>
+                                    </td>
+                                    <td>
+                                        {{#if (eq role 'admin')}}
+                                        <span class="badge bg-danger fs-6">
+                                            <i class="fas fa-user-shield me-1"></i>Admin
+                                        </span>
+                                        {{else}}
+                                        <span class="badge bg-success fs-6">
+                                            <i class="fas fa-user me-1"></i>User
+                                        </span>
+                                        {{/if}}
+                                    </td>
+                                    <td>
+                                        <div class="text-muted">
+                                            {{formatDate createdAt}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success fs-6">
+                                            <i class="fas fa-check me-1"></i>Active
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="viewUser('{{_id}}')" 
+                                                    title="View User">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            {{#unless (eq role 'admin')}}
+                                            <button class="btn btn-outline-warning" onclick="editUser('{{_id}}')" 
+                                                    title="Edit User">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deleteUser('{{_id}}')" 
+                                                    title="Delete User">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            {{/unless}}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{else}}
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No users found</h5>
+                        <p class="text-muted">No users are currently registered in the system.</p>
+                        <button class="btn btn-primary" onclick="refreshUsers()">
+                            <i class="fas fa-sync me-2"></i>Refresh Users
+                        </button>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function refreshUsers() {
+    window.location.reload();
+}
+
+function viewUser(userId) {
+    // Implement view user functionality
+    alert('View user functionality coming soon for user: ' + userId);
+}
+
+function editUser(userId) {
+    // Implement edit user functionality
+    alert('Edit user functionality coming soon for user: ' + userId);
+}
+
+function deleteUser(userId) {
+    if (confirm('Are you sure you want to delete this user?')) {
+        // Implement delete user functionality
+        alert('Delete user functionality coming soon for user: ' + userId);
+    }
+}
+</script>
+
+<style>
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.badge {
+    font-size: 0.8em;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+}
+</style>

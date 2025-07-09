@@ -1,38 +1,298 @@
-<div class="m-5">
-    <h1 class="">Enter Delivery Details</h1>
-    <br>
-    <form action="/place-order/{{user._id}}" id="" method="POST" class="row">
-        <div class="col-12 col-lg-6 ">
-            <div class="form-group">
-                <label for="address">Address<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="address" id="address" placeholder="Enter your Address" required='true'>
-            </div>
-            <div class="form-group">
-                <label for="pincode">Pincode <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" name="pincode" id="pincode" placeholder="Enter Your Pincode" required="true">
-            </div>
-            <div class="form-group">
-                <label for="mobile">Mobile <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control" name="mobile" id="mobile" placeholder="Enter Your Mobile" required="true">
-            </div>
-
-        </div>
-        <div class="border border-lg p-4  col-12 col-lg-6">
-            <h2>Total Amount : ₹ <span>{{total}}</span></h2>
-            <hr>
-            <h6>Payment Method</h6>
-            <div action="">
-                <div>
-                    <input type="radio" name="payment" value="COD" required> COD
-                </div>
-                <div>
-                    <input type="radio" name="payment" value="UPI"> UPI Payment
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Chekout" class="btn btn-info btn-block mt-1">
+<div class="min-vh-100 bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Page Header -->
+                <div class="text-center mb-5">
+                    <h1 class="fw-bold text-primary">Complete Your Order</h1>
+                    <p class="text-muted">Please provide delivery details to complete your purchase</p>
                 </div>
 
+                <form action="/place-order/{{user._id}}" method="POST" id="orderForm">
+                    <div class="row g-4">
+                        <!-- Delivery Details -->
+                        <div class="col-lg-7">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-shipping-fast me-2"></i>Delivery Information
+                                    </h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label for="address" class="form-label fw-semibold">
+                                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>Delivery Address
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea class="form-control form-control-lg" name="address" id="address" 
+                                                    rows="3" placeholder="Enter your complete delivery address" 
+                                                    required></textarea>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="pincode" class="form-label fw-semibold">
+                                                <i class="fas fa-map-pin me-2 text-primary"></i>Pincode
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control form-control-lg" name="pincode" 
+                                                   id="pincode" placeholder="Enter pincode" pattern="[0-9]{6}" 
+                                                   maxlength="6" required>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="mobile" class="form-label fw-semibold">
+                                                <i class="fas fa-phone me-2 text-primary"></i>Mobile Number
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="tel" class="form-control form-control-lg" name="mobile" 
+                                                   id="mobile" placeholder="Enter mobile number" pattern="[0-9]{10}" 
+                                                   maxlength="10" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary & Payment -->
+                        <div class="col-lg-5">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-receipt me-2"></i>Order Summary
+                                    </h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <!-- Total Amount -->
+                                    <div class="bg-gradient-primary-light rounded p-4 mb-4 position-relative overflow-hidden">
+                                        <div class="position-absolute top-0 end-0 opacity-10">
+                                            <i class="fas fa-shopping-cart fa-3x"></i>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center position-relative">
+                                            <div>
+                                                <small class="text-muted">Total Amount</small>
+                                                <div class="fs-4 fw-bold text-success">₹{{total}}</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <i class="fas fa-receipt text-success fa-2x"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Methods -->
+                                    <h6 class="fw-semibold mb-3">
+                                        <i class="fas fa-credit-card me-2 text-primary"></i>Payment Method
+                                    </h6>
+                                    
+                                    <div class="payment-options">
+                                        <div class="form-check payment-option mb-3 p-4 border rounded-3">
+                                            <input class="form-check-input" type="radio" name="payment" 
+                                                   value="COD" id="cod" required>
+                                            <label class="form-check-label w-100" for="cod">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="payment-icon me-3">
+                                                        <i class="fas fa-money-bill-wave text-success fs-2"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold fs-6">Cash on Delivery</div>
+                                                        <small class="text-muted">Pay when you receive your order</small>
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-success bg-opacity-10 text-success">
+                                                                <i class="fas fa-check me-1"></i>Safe & Secure
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check payment-option mb-4 p-4 border rounded-3">
+                                            <input class="form-check-input" type="radio" name="payment" 
+                                                   value="UPI" id="upi">
+                                            <label class="form-check-label w-100" for="upi">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="payment-icon me-3">
+                                                        <i class="fab fa-google-pay text-primary fs-2"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold fs-6">UPI Payment</div>
+                                                        <small class="text-muted">Pay instantly via UPI apps</small>
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                                <i class="fas fa-bolt me-1"></i>Instant
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Place Order Button -->
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button type="submit" class="btn btn-primary btn-lg" id="placeOrderBtn">
+                                            <span class="btn-text">
+                                                <i class="fas fa-shopping-bag me-2"></i>Place Order
+                                            </span>
+                                            <span class="btn-loading d-none">
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                                Processing...
+                                            </span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center mb-2">
+                                            <i class="fas fa-shield-alt text-success me-2"></i>
+                                            <small class="text-muted">Your order is secure and protected</small>
+                                        </div>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <i class="fas fa-truck text-primary me-2"></i>
+                                            <small class="text-muted">Free delivery on orders above ₹500</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 </div>
+
+<script>
+    // Form validation and submission
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        const form = this;
+        const address = document.getElementById('address');
+        const pincode = document.getElementById('pincode');
+        const mobile = document.getElementById('mobile');
+        const paymentMethod = document.querySelector('input[name="payment"]:checked');
+        const btn = document.getElementById('placeOrderBtn');
+        const btnText = btn.querySelector('.btn-text');
+        const btnLoading = btn.querySelector('.btn-loading');
+        
+        let isValid = true;
+        
+        // Validate address
+        if (!address.value.trim()) {
+            address.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            address.classList.remove('is-invalid');
+        }
+        
+        // Validate pincode
+        if (!pincode.value.trim() || pincode.value.length !== 6) {
+            pincode.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            pincode.classList.remove('is-invalid');
+        }
+        
+        // Validate mobile
+        if (!mobile.value.trim() || mobile.value.length !== 10) {
+            mobile.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            mobile.classList.remove('is-invalid');
+        }
+        
+        // Validate payment method
+        if (!paymentMethod) {
+            alert('Please select a payment method');
+            isValid = false;
+        }
+        
+        // If validation fails, prevent form submission and reset button
+        if (!isValid) {
+            e.preventDefault();
+            btnText.classList.remove('d-none');
+            btnLoading.classList.add('d-none');
+            btn.disabled = false;
+            return;
+        }
+        
+        // Show loading state only if validation passes
+        btnText.classList.add('d-none');
+        btnLoading.classList.remove('d-none');
+        btn.disabled = true;
+        
+        // For UPI payment, show additional loading message
+        if (paymentMethod.value === 'UPI') {
+            btnLoading.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing UPI Payment...';
+        }
+    });
+
+    // Input validation
+    document.getElementById('pincode').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    document.getElementById('mobile').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+</script>
+
+<style>
+    .form-check-input:checked {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+    }
+    
+    .payment-option {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid #e9ecef !important;
+    }
+    
+    .payment-option:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border-color: var(--bs-primary) !important;
+    }
+    
+    .payment-option input[type="radio"]:checked + label .payment-icon i {
+        transform: scale(1.1);
+    }
+    
+    .payment-option:has(input[type="radio"]:checked) {
+        border-color: var(--bs-primary) !important;
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+    
+    .bg-gradient-primary-light {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+    }
+    
+    .payment-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    
+    .form-control:focus {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .card {
+        border-radius: 1rem;
+    }
+    
+    .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 0.75rem;
+    }
+</style>

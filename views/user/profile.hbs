@@ -1,0 +1,346 @@
+<section class="py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-user me-2 text-primary"></i>My Profile
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item active">Profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Profile Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="profile-avatar mb-3">
+                            <img src="https://via.placeholder.com/120x120/2563eb/ffffff?text={{user.fullname.[0]}}" 
+                                 class="rounded-circle img-fluid" alt="Profile Picture" style="width: 120px; height: 120px;">
+                        </div>
+                        <h5 class="fw-bold mb-1">{{user.fullname}}</h5>
+                        <p class="text-muted mb-3">{{user.email}}</p>
+                        <span class="badge bg-success">Active Member</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#account-info" class="list-group-item list-group-item-action active" onclick="showSection('account-info')">
+                                <i class="fas fa-user me-2"></i>Account Information
+                            </a>
+                            <a href="#order-history" class="list-group-item list-group-item-action" onclick="showSection('order-history')">
+                                <i class="fas fa-box me-2"></i>Order History
+                            </a>
+                            <a href="#address-book" class="list-group-item list-group-item-action" onclick="showSection('address-book')">
+                                <i class="fas fa-map-marker-alt me-2"></i>Address Book
+                            </a>
+                            <a href="#security" class="list-group-item list-group-item-action" onclick="showSection('security')">
+                                <i class="fas fa-shield-alt me-2"></i>Security Settings
+                            </a>
+                            <a href="#preferences" class="list-group-item list-group-item-action" onclick="showSection('preferences')">
+                                <i class="fas fa-cog me-2"></i>Preferences
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Content -->
+            <div class="col-lg-9">
+                <!-- Account Information -->
+                <div id="account-info" class="profile-section">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-user me-2 text-primary"></i>Account Information
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="profileForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fullname" class="form-label fw-500">Full Name</label>
+                                        <input type="text" class="form-control" id="fullname" value="{{user.fullname}}" readonly>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label fw-500">Email Address</label>
+                                        <input type="email" class="form-control" id="email" value="{{user.email}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label fw-500">Phone Number</label>
+                                        <input type="tel" class="form-control" id="phone" value="{{user.phone}}" readonly>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="joinDate" class="form-label fw-500">Member Since</label>
+                                        <input type="text" class="form-control" id="joinDate" value="January 2024" readonly>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-primary" onclick="enableEdit()">
+                                        <i class="fas fa-edit me-1"></i>Edit Profile
+                                    </button>
+                                    <button type="button" class="btn btn-success d-none" id="saveBtn" onclick="saveProfile()">
+                                        <i class="fas fa-save me-1"></i>Save Changes
+                                    </button>
+                                    <button type="button" class="btn btn-secondary d-none" id="cancelBtn" onclick="cancelEdit()">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order History -->
+                <div id="order-history" class="profile-section d-none">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-box me-2 text-primary"></i>Order History
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="text-center py-4">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <h4 class="text-muted">No orders yet</h4>
+                                <p class="text-muted">You haven't placed any orders yet.</p>
+                                <a href="/products" class="btn btn-primary">
+                                    <i class="fas fa-shopping-bag me-1"></i>Start Shopping
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Book -->
+                <div id="address-book" class="profile-section d-none">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>Address Book
+                            </h5>
+                            <button class="btn btn-primary btn-sm" onclick="addAddress()">
+                                <i class="fas fa-plus me-1"></i>Add Address
+                            </button>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="text-center py-4">
+                                <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                                <h4 class="text-muted">No addresses saved</h4>
+                                <p class="text-muted">Add your addresses for faster checkout.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="security" class="profile-section d-none">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-shield-alt me-2 text-primary"></i>Security Settings
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <h6 class="fw-bold mb-3">Change Password</h6>
+                                    <form id="passwordForm">
+                                        <div class="mb-3">
+                                            <label for="currentPassword" class="form-label">Current Password</label>
+                                            <input type="password" class="form-control" id="currentPassword" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="newPassword" class="form-label">New Password</label>
+                                            <input type="password" class="form-control" id="newPassword" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                            <input type="password" class="form-control" id="confirmPassword" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-key me-1"></i>Update Password
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences -->
+                <div id="preferences" class="profile-section d-none">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-cog me-2 text-primary"></i>Preferences
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="fw-bold mb-3">Email Notifications</h6>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="orderUpdates" checked>
+                                        <label class="form-check-label" for="orderUpdates">
+                                            Order updates and shipping notifications
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="promotions" checked>
+                                        <label class="form-check-label" for="promotions">
+                                            Promotional offers and discounts
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-4">
+                                        <input class="form-check-input" type="checkbox" id="newsletter">
+                                        <label class="form-check-label" for="newsletter">
+                                            Weekly newsletter
+                                        </label>
+                                    </div>
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>Save Preferences
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.profile-section').forEach(section => {
+            section.classList.add('d-none');
+        });
+        
+        // Remove active class from all nav items
+        document.querySelectorAll('.list-group-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Show selected section
+        document.getElementById(sectionId).classList.remove('d-none');
+        
+        // Add active class to clicked nav item
+        event.target.classList.add('active');
+    }
+
+    function enableEdit() {
+        const inputs = document.querySelectorAll('#profileForm input');
+        inputs.forEach(input => {
+            if (input.id !== 'email' && input.id !== 'joinDate') {
+                input.removeAttribute('readonly');
+                input.classList.add('bg-light');
+            }
+        });
+        
+        document.querySelector('.btn-primary').classList.add('d-none');
+        document.getElementById('saveBtn').classList.remove('d-none');
+        document.getElementById('cancelBtn').classList.remove('d-none');
+    }
+
+    function saveProfile() {
+        // Here you would typically send the data to the server
+        showToast('Profile updated successfully!', 'success');
+        cancelEdit();
+    }
+
+    function cancelEdit() {
+        const inputs = document.querySelectorAll('#profileForm input');
+        inputs.forEach(input => {
+            input.setAttribute('readonly', true);
+            input.classList.remove('bg-light');
+        });
+        
+        document.querySelector('.btn-primary').classList.remove('d-none');
+        document.getElementById('saveBtn').classList.add('d-none');
+        document.getElementById('cancelBtn').classList.add('d-none');
+    }
+
+    function addAddress() {
+        showToast('Address form coming soon!', 'info');
+    }
+
+    // Password form validation
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (newPassword !== confirmPassword) {
+            showToast('Passwords do not match!', 'danger');
+            return;
+        }
+        
+        if (newPassword.length < 6) {
+            showToast('Password must be at least 6 characters long!', 'danger');
+            return;
+        }
+        
+        showToast('Password updated successfully!', 'success');
+        this.reset();
+    });
+</script>
+
+<style>
+    .profile-avatar img {
+        border: 4px solid #fff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 1rem 1.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+        padding-left: 2rem;
+    }
+
+    .list-group-item.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 0;
+    }
+
+    .list-group-item.active:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .profile-section {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        border-color: #e9ecef;
+    }
+
+    .form-control.bg-light {
+        background-color: #fff !important;
+        border-color: var(--primary-color);
+    }
+</style>
